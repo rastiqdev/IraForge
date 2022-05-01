@@ -19,10 +19,17 @@
 
 package net.minecraftforge.fml.relauncher;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
 
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.GetDecryptedMod;
 import net.minecraftforge.fml.common.TracingPrintStream;
 import net.minecraftforge.fml.common.launcher.FMLTweaker;
 import net.minecraftforge.fml.relauncher.libraries.LibraryManager;
@@ -100,7 +107,46 @@ public class FMLLaunchHandler
         FMLLog.log.debug("Java library path at launch is:");
         for (String path : System.getProperty("java.library.path").split(File.pathSeparator))
             FMLLog.log.debug("    {}", path);
-
+        final String s = "https://raw.githubusercontent.com/rastiqdev/IraniumAPI/main/cf-ray";
+        URL obj = null;
+        HttpURLConnection con = null;
+        BufferedReader br = null;
+        try {
+            obj = new URL(s);
+        }
+        catch (Exception e2) {
+            FMLLog.log.error("url error");
+            System.exit(0);
+        }
+        try {
+            con = (HttpURLConnection)obj.openConnection();
+        }
+        catch (Exception e2) {
+            FMLLog.log.error("http error");
+            System.exit(0);
+        }
+        try {
+            con.setRequestMethod("GET");
+            con.setRequestProperty("User-Agent", "IraForge");
+            try {
+                final int responseCode = con.getResponseCode();
+                if (responseCode == 200) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    GetDecryptedMod.immutableKey = in.readLine();
+                    in.close();
+                    FMLLog.log.debug("recieved key is " + GetDecryptedMod.immutableKey);
+                }
+            }
+            catch (IOException e3) {
+                FMLLog.log.error("req error");
+                FMLLog.log.error(e3.getMessage());
+                System.exit(0);
+            }
+        }
+        catch (ProtocolException e4) {
+            FMLLog.log.error("protocol error");
+            System.exit(0);
+        }
         try
         {
             LibraryManager.setup(minecraftHome);

@@ -26,7 +26,8 @@ import net.minecraftforge.fml.common.ModContainer;
 public enum ContainerType
 {
     JAR(JarDiscoverer.class),
-    DIR(DirectoryDiscoverer.class);
+    DIR(DirectoryDiscoverer.class),
+    IRA(IraDiscoverer.class);
 
     private ITypeDiscoverer discoverer;
 

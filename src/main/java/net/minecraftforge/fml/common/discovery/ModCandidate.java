@@ -64,6 +64,14 @@ public class ModCandidate
         return modContainer;
     }
 
+    public void setClassPathRoot(final File f) {
+        this.classPathRoot = f;
+    }
+
+    public void setModContainer(final File f) {
+        this.modContainer = f;
+    }
+
     public ContainerType getSourceType()
     {
         return sourceType;

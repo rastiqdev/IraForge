@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeVersion;
@@ -419,8 +420,14 @@ public class Loader
             }
             else
             {
-                FMLLog.log.debug("Found a candidate zip or jar file {}", mod.getName());
-                discoverer.addCandidate(new ModCandidate(mod, mod, ContainerType.JAR));
+                final Matcher matcher = ModDiscoverer.zipJar.matcher(mod.getName());
+                if (matcher.matches()) {
+                    FMLLog.log.debug("Found a candidate zip or jar file {}", matcher.group(0));
+                    discoverer.addCandidate(new ModCandidate(mod, mod, ContainerType.IRA));
+                }
+                else {
+                    FMLLog.log.debug("Ignoring unknown file {} in mods directory", mod.getName());
+                }
             }
         }
 
