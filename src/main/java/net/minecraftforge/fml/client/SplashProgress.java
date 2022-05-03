@@ -169,7 +169,7 @@ public class SplashProgress
 
         // Enable if we have the flag, and there's either no optifine, or optifine has added a key to the blackboard ("optifine.ForgeSplashCompatible")
         // Optifine authors - add this key to the blackboard if you feel your modifications are now compatible with this code.
-        enabled =            getBool("enabled",      defaultEnabled) && ( (!FMLClientHandler.instance().hasOptifine()) || Launch.blackboard.containsKey("optifine.ForgeSplashCompatible"));
+        enabled =            false;
         rotate =             getBool("rotate",       false);
         showMemory =         getBool("showMemory",   true);
         logoOffset =         getInt("logoOffset",    0);

@@ -44,6 +44,7 @@ import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.fml.client.SplashScreen;
 import net.minecraftforge.fml.common.LoaderState.ModState;
 import net.minecraftforge.fml.common.ModContainer.Disableable;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
@@ -567,6 +568,7 @@ public class Loader
     {
         progressBar = ProgressManager.push("Loading", 7);
         progressBar.step("Constructing Mods");
+        SplashScreen.setProgress(1, "Construction des mods");
         initializeLoader();
         mods = Lists.newArrayList();
         namedMods = Maps.newHashMap();
@@ -619,6 +621,7 @@ public class Loader
             FMLLog.log.debug("No user mod signature data found");
         }
         progressBar.step("Initializing mods Phase 1");
+        SplashScreen.setProgress(2, "Initialisation des mods (partie 1)");
         modController.transition(LoaderState.PREINITIALIZATION, false);
     }
 
@@ -640,6 +643,7 @@ public class Loader
         ItemStackHolderInjector.INSTANCE.inject();
         modController.transition(LoaderState.INITIALIZATION, false);
         progressBar.step("Initializing Minecraft Engine");
+        SplashScreen.setProgress(3, "Initialisation de Minecraft");
     }
 
     private void disableRequestedMods()
@@ -751,20 +755,24 @@ public class Loader
     public void initializeMods()
     {
         progressBar.step("Initializing mods Phase 2");
+        SplashScreen.setProgress(4, "Initialisation des mods (partie 2)");
         CraftingHelper.loadRecipes(false);
         // Mod controller should be in the initialization state here
         modController.distributeStateMessage(LoaderState.INITIALIZATION);
         progressBar.step("Initializing mods Phase 3");
+        SplashScreen.setProgress(5, "Initialisation des mods (partie 3)");
         modController.transition(LoaderState.POSTINITIALIZATION, false);
         modController.distributeStateMessage(FMLInterModComms.IMCEvent.class);
         ItemStackHolderInjector.INSTANCE.inject();
         modController.distributeStateMessage(LoaderState.POSTINITIALIZATION);
         progressBar.step("Finishing up");
+        SplashScreen.setProgress(6, "Finalisation");
         modController.transition(LoaderState.AVAILABLE, false);
         modController.distributeStateMessage(LoaderState.AVAILABLE);
         GameData.freezeData();
         FMLLog.log.info("Forge Mod Loader has successfully loaded {} mod{}", mods.size(), mods.size() == 1 ? "" : "s");
         progressBar.step("Completing Minecraft initialization");
+        SplashScreen.setProgress(7, "Bon jeu !");
     }
 
     public ICrashCallable getCallableCrashInformation()
